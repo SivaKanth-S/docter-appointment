@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏥 Doctor Appointment Management System — Multi-Mode Medical Booking</title>
+    <meta name="description" content="Secure Doctor Appointment Management System supporting strict Online and Offline medical consultations with live status lifecycle tracking.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Navigation Bar -->
+    <header class="navbar-container">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="brand-icon">🏥</span>
+                <div class="brand-text">
+                    <span class="brand-title">Doctor Appointment</span>
+                    <span class="brand-badge">PRO EXPO 2026</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#doctors" class="nav-link">Doctors</a></li>
+                <li><a href="#booking" class="nav-link">Book Slot</a></li>
+                <li><a href="#appointments" class="nav-link">Appointments</a></li>
+                <li><a href="#reports" class="nav-link">Analytics</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="openAddDoctorBtn" class="btn btn-secondary-outline">
+                    <span>+ Add Doctor</span>
+                </button>
+                <a href="#booking" class="btn btn-primary">
+                    <span>Book Appointment</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Welcome Banner / Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <span class="pulse-dot"></span>
+                    <span>Multi-Mode Healthcare Platform • College Project Expo</span>
+                </div>
+                <h1 class="hero-title">Welcome to Doctor Appointment System</h1>
+                <p class="hero-subtitle">Manage doctors and appointments easily in one place.</p>
+                <div class="hero-feature-pills">
+                    <span class="feature-pill"><span class="pill-icon">💻</span> Online Video Consultation</span>
+                    <span class="feature-pill"><span class="pill-icon">🏥</span> In-Clinic OPD Visits</span>
+                    <span class="feature-pill highlight"><span class="pill-icon">🛡️</span> Strict Doctor Mode Separation</span>
+                    <span class="feature-pill"><span class="pill-icon">⚡</span> Real-Time Status Lifecycle</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Dashboard Cards -->
+        <section class="dashboard-stats-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Live System Overview</h2>
+                    <p class="section-subtext">Real-time statistics synchronized with PostgreSQL backend</p>
+                </div>
+                <div class="system-status-badge">
+                    <span class="status-indicator"></span> Backend: <strong id="backendStatus">Connecting...</strong>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <!-- Card 1: Total Doctors -->
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper doctor-theme">
+                        <span class="stat-icon">👨‍⚕️</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Doctors</span>
+                        <h3 id="totalDoctorsCount" class="stat-number">0</h3>
+                        <div class="stat-subinfo">
+                            <span class="badge-mini online" id="statOnlineDoctors">0 Online</span>
+                            <span class="badge-mini offline" id="statOfflineDoctors">0 Offline</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Appointments -->
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper appt-theme">
+                        <span class="stat-icon">📅</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Appointments</span>
+                        <h3 id="totalAppointmentsCount" class="stat-number">0</h3>
+                        <div class="stat-subinfo">
+                            <span class="badge-mini online" id="statOnlineAppointments">0 Online</span>
+                            <span class="badge-mini offline" id="statOfflineAppointments">0 In-Clinic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Today's Appointments -->
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper today-theme">
+                        <span class="stat-icon">⏱️</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">Today's Schedule</span>
+                        <h3 id="todayAppointmentsCount" class="stat-number">0</h3>
+                        <div class="stat-subinfo">
+                            <span class="badge-mini pending" id="statPendingCount">0 Pending</span>
+                            <span class="badge-mini confirmed" id="statConfirmedCount">0 Confirmed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Total Revenue -->
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper revenue-theme">
+                        <span class="stat-icon">₹</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Revenue</span>
+                        <h3 id="totalRevenueCount" class="stat-number">₹0</h3>
+                        <div class="stat-subinfo">
+                            <span class="badge-mini completed" id="statCompletedCount">0 Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doctor Management Section -->
+        <section id="doctors" class="section-block">
+            <div class="section-header with-controls">
+                <div>
+                    <h2 class="section-title">Doctor Management</h2>
+                    <p class="section-subtext">Browse verified medical specialists. Online and In-Clinic appointments use strictly separate doctors.</p>
+                </div>
+                <button id="addDoctorSectionBtn" class="btn btn-primary">
+                    <span>+ Add New Doctor</span>
+                </button>
+            </div>
+
+            <!-- Search and Filters Bar -->
+            <div class="filters-card">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="doctorSearchInput" placeholder="Search doctor by name..." autocomplete="off">
+                    <button id="clearSearchBtn" class="btn-clear" title="Clear search">✕</button>
+                </div>
+
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="specialtyFilter">Specialty:</label>
+                        <select id="specialtyFilter" class="form-select">
+                            <option value="">All Specialties</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label for="modeFilter">Consultation Mode:</label>
+                        <select id="modeFilter" class="form-select">
+                            <option value="">All Modes</option>
+                            <option value="ONLINE">Online Only</option>
+                            <option value="OFFLINE">Offline / In-Clinic Only</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor List Grid -->
+            <div id="doctorListContainer" class="doctors-grid">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading medical specialists...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Book Appointment Section -->
+        <section id="booking" class="section-block booking-container">
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-title-group">
+                        <span class="icon-circle">📝</span>
+                        <div>
+                            <h2>Book Doctor Appointment</h2>
+                            <p>Select your preferred doctor, date, and consultation mode. Default status will be set to <strong>Pending</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="booking-rule-notice">
+                        <span class="notice-icon">⚠️</span>
+                        <span><strong>Strict Rule:</strong> Online and Offline appointments cannot use the same doctor. Selection will auto-verify.</span>
+                    </div>
+                </div>
+
+                <form id="appointmentForm" class="appointment-form">
+                    <div class="form-grid">
+                        <!-- Patient Name -->
+                        <div class="form-group">
+                            <label for="patientName">Patient Full Name <span class="required">*</span></label>
+                            <input type="text" id="patientName" placeholder="e.g. John Doe / Rajesh Kumar" required>
+                        </div>
+
+                        <!-- Patient Email -->
+                        <div class="form-group">
+                            <label for="patientEmail">Patient Email <span class="required">*</span></label>
+                            <input type="email" id="patientEmail" placeholder="e.g. patient@example.com" required>
+                        </div>
+
+                        <!-- Patient Phone -->
+                        <div class="form-group">
+                            <label for="patientPhone">Patient Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="patientPhone" placeholder="e.g. +91 98765 43210" required>
+                        </div>
+
+                        <!-- Doctor Dropdown (Dynamic) -->
+                        <div class="form-group">
+                            <label for="doctorSelect">Select Doctor <span class="required">*</span></label>
+                            <select id="doctorSelect" class="form-select" required>
+                                <option value="">Select Doctor</option>
+                                <!-- Populated dynamically from GET /api/doctors -->
+                            </select>
+                            <small class="field-hint" id="doctorHintText">Please choose a doctor to view mode and fee</small>
+                        </div>
+
+                        <!-- Mode Selection (Auto-synced with Doctor) -->
+                        <div class="form-group">
+                            <label for="appointmentMode">Consultation Mode <span class="required">*</span></label>
+                            <select id="appointmentMode" class="form-select" required>
+                                <option value="ONLINE">💻 Online (Telehealth Consultation)</option>
+                                <option value="OFFLINE">🏥 Offline (In-Clinic Hospital Visit)</option>
+                            </select>
+                            <small class="field-hint mode-hint" id="modeHintText">Mode is strictly linked to doctor assignment</small>
+                        </div>
+
+                        <!-- Appointment Date -->
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date <span class="required">*</span></label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+
+                        <!-- Appointment Time -->
+                        <div class="form-group">
+                            <label for="appointmentTime">Appointment Time Slot <span class="required">*</span></label>
+                            <select id="appointmentTime" class="form-select" required>
+                                <option value="">Select Time Slot</option>
+                                <option value="09:00 AM">09:00 AM - 09:30 AM</option>
+                                <option value="10:00 AM">10:00 AM - 10:30 AM</option>
+                                <option value="11:00 AM">11:00 AM - 11:30 AM</option>
+                                <option value="12:00 PM">12:00 PM - 12:30 PM</option>
+                                <option value="02:00 PM">02:00 PM - 02:30 PM</option>
+                                <option value="03:00 PM">03:00 PM - 03:30 PM</option>
+                                <option value="04:30 PM">04:30 PM - 05:00 PM</option>
+                                <option value="06:00 PM">06:00 PM - 06:30 PM</option>
+                            </select>
+                        </div>
+
+                        <!-- Fee Preview -->
+                        <div class="form-group fee-preview-group">
+                            <label>Consultation Fee</label>
+                            <div class="fee-display" id="feeDisplay">₹0.00</div>
+                        </div>
+
+                        <!-- Reason for Appointment -->
+                        <div class="form-group full-width">
+                            <label for="appointmentReason">Reason for Consultation <span class="required">*</span></label>
+                            <textarea id="appointmentReason" rows="3" placeholder="Describe symptoms, medical query, or reason for appointment..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="resetBookingBtn" class="btn btn-secondary-outline">Clear Form</button>
+                        <button type="submit" id="submitBookingBtn" class="btn btn-primary btn-large">
+                            <span>Book Appointment</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Appointment Management Section -->
+        <section id="appointments" class="section-block">
+            <div class="section-header with-controls">
+                <div>
+                    <h2 class="section-title">Appointment Management</h2>
+                    <p class="section-subtext">Manage patient bookings, update statuses in real-time, or edit and cancel appointments.</p>
+                </div>
+                <div class="tab-filters">
+                    <button class="tab-btn active" data-status="ALL">All</button>
+                    <button class="tab-btn" data-status="PENDING">Pending</button>
+                    <button class="tab-btn" data-status="CONFIRMED">Confirmed</button>
+                    <button class="tab-btn" data-status="COMPLETED">Completed</button>
+                    <button class="tab-btn" data-status="CANCELLED">Cancelled</button>
+                    <button class="tab-btn" data-status="NO_SHOW">No-Show</button>
+                </div>
+            </div>
+
+            <!-- Appointments List / Cards -->
+            <div id="appointmentListContainer" class="appointments-grid">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading appointments...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports & Analytics Section -->
+        <section id="reports" class="section-block reports-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Daily Summary & Analytics</h2>
+                    <p class="section-subtext">Mode-wise distribution, specialty breakdown, and revenue analytics for college expo demonstration.</p>
+                </div>
+                <div class="report-controls">
+                    <label for="reportDateInput">Select Date:</label>
+                    <input type="date" id="reportDateInput" class="form-date-input">
+                    <button id="refreshReportsBtn" class="btn btn-secondary-outline">🔄 Refresh</button>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <!-- Mode Comparison Box -->
+                <div class="report-card">
+                    <h3 class="report-card-title">Consultation Mode Distribution</h3>
+                    <div class="mode-comparison-bars">
+                        <div class="comparison-row">
+                            <div class="row-meta">
+                                <span>Online Consultations</span>
+                                <strong id="reportOnlinePercent">50%</strong>
+                            </div>
+                            <div class="progress-track">
+                                <div id="reportOnlineBar" class="progress-bar online-bar" style="width: 50%;"></div>
+                            </div>
+                            <div class="row-subtext" id="reportOnlineMeta">0 appointments • ₹0</div>
+                        </div>
+
+                        <div class="comparison-row">
+                            <div class="row-meta">
+                                <span>In-Clinic (Offline) Consultations</span>
+                                <strong id="reportOfflinePercent">50%</strong>
+                            </div>
+                            <div class="progress-track">
+                                <div id="reportOfflineBar" class="progress-bar offline-bar" style="width: 50%;"></div>
+                            </div>
+                            <div class="row-subtext" id="reportOfflineMeta">0 appointments • ₹0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments By Specialty -->
+                <div class="report-card">
+                    <h3 class="report-card-title">Appointments by Specialty</h3>
+                    <div id="specialtyAnalyticsContainer" class="specialty-bars-container">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Appointment Status Breakdown -->
+                <div class="report-card">
+                    <h3 class="report-card-title">Status Lifecycle Summary</h3>
+                    <div class="lifecycle-summary-grid">
+                        <div class="lifecycle-box pending-box">
+                            <span class="box-label">Pending</span>
+                            <span class="box-num" id="summaryPending">0</span>
+                        </div>
+                        <div class="lifecycle-box confirmed-box">
+                            <span class="box-label">Confirmed</span>
+                            <span class="box-num" id="summaryConfirmed">0</span>
+                        </div>
+                        <div class="lifecycle-box completed-box">
+                            <span class="box-label">Completed</span>
+                            <span class="box-num" id="summaryCompleted">0</span>
+                        </div>
+                        <div class="lifecycle-box cancelled-box">
+                            <span class="box-label">Cancelled</span>
+                            <span class="box-num" id="summaryCancelled">0</span>
+                        </div>
+                        <div class="lifecycle-box noshow-box">
+                            <span class="box-label">No-Show</span>
+                            <span class="box-num" id="summaryNoShow">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="footer-icon">🏥</span>
+                <span>Doctor Appointment Management System</span>
+            </div>
+            <p class="footer-text">Built for College Project Expo • Spring Boot + PostgreSQL + REST API + Modern Web</p>
+            <div class="footer-links">
+                <a href="http://localhost:8080/swagger-ui/index.html" target="_blank" class="footer-link">📖 Swagger API Docs</a>
+                <a href="http://localhost:8080/h2-console" target="_blank" class="footer-link">🗄️ Database Console</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Add / Edit Doctor Modal -->
+    <div id="doctorModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="doctorModalTitle">Add New Doctor</h3>
+                <button type="button" class="modal-close-btn" id="closeDoctorModalBtn">✕</button>
+            </div>
+            <form id="doctorForm" class="modal-form">
+                <input type="hidden" id="doctorIdInput">
+                <div class="form-group">
+                    <label for="docName">Doctor Name <span class="required">*</span></label>
+                    <input type="text" id="docName" placeholder="e.g. Dr. Ramesh Kumar" required>
+                </div>
+                <div class="form-group">
+                    <label for="docSpecialty">Specialty <span class="required">*</span></label>
+                    <input type="text" id="docSpecialty" placeholder="e.g. Cardiology, Neurology, Dermatology" required>
+                </div>
+                <div class="form-group">
+                    <label for="docMode">Consultation Mode <span class="required">*</span></label>
+                    <select id="docMode" class="form-select" required>
+                        <option value="ONLINE">ONLINE (Telehealth Consultation Only)</option>
+                        <option value="OFFLINE">OFFLINE (In-Clinic Hospital Visit Only)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="docEmail">Doctor Email <span class="required">*</span></label>
+                    <input type="email" id="docEmail" placeholder="e.g. doctor@medicare.org" required>
+                </div>
+                <div class="form-group">
+                    <label for="docPhone">Phone Number</label>
+                    <input type="tel" id="docPhone" placeholder="e.g. +91 98400 12345">
+                </div>
+                <div class="form-group">
+                    <label for="docFee">Consultation Fee (₹)</label>
+                    <input type="number" id="docFee" min="100" step="50" value="500">
+                </div>
+                <div class="form-group" id="clinicAddressGroup">
+                    <label for="docAddress">Clinic / Hospital Room Location</label>
+                    <input type="text" id="docAddress" placeholder="e.g. Cabin 204, Apollo Hospital, Greams Rd, Chennai">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary-outline" id="cancelDoctorModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveDoctorBtn">Save Doctor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Edit Appointment Modal -->
+    <div id="appointmentEditModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Edit Appointment</h3>
+                <button type="button" class="modal-close-btn" id="closeApptModalBtn">✕</button>
+            </div>
+            <form id="appointmentEditForm" class="modal-form">
+                <input type="hidden" id="editApptId">
+                <div class="form-group">
+                    <label for="editPatientName">Patient Name</label>
+                    <input type="text" id="editPatientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDoctorName">Doctor Name</label>
+                    <input type="text" id="editDoctorName" readonly class="readonly-input">
+                </div>
+                <div class="form-group">
+                    <label for="editApptDate">Date</label>
+                    <input type="date" id="editApptDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="editApptTime">Time Slot</label>
+                    <input type="text" id="editApptTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="editApptReason">Reason</label>
+                    <textarea id="editApptReason" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editApptStatus">Status</label>
+                    <select id="editApptStatus" class="form-select">
+                        <option value="PENDING">PENDING</option>
+                        <option value="CONFIRMED">CONFIRMED</option>
+                        <option value="COMPLETED">COMPLETED</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                        <option value="NO_SHOW">NO_SHOW</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary-outline" id="cancelApptModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Mode-Specific Confirmation Modal -->
+    <div id="confirmationModal" class="modal-overlay">
+        <div class="modal-container confirmation-card">
+            <div class="confirmation-icon-wrapper">
+                <span class="conf-icon">🎉</span>
+            </div>
+            <h3 class="confirmation-title">Appointment Confirmed!</h3>
+            <p class="confirmation-subtitle">Your appointment has been successfully scheduled.</p>
+
+            <div class="confirmation-details-box">
+                <div class="conf-row">
+                    <span>Appointment ID:</span>
+                    <strong id="confApptId">#APT-101</strong>
+                </div>
+                <div class="conf-row">
+                    <span>Patient Name:</span>
+                    <strong id="confPatientName">John Doe</strong>
+                </div>
+                <div class="conf-row">
+                    <span>Doctor:</span>
+                    <strong id="confDoctorName">Dr. Sarah Jenkins</strong>
+                </div>
+                <div class="conf-row">
+                    <span>Date & Time:</span>
+                    <strong id="confDateTime">Today, 10:00 AM</strong>
+                </div>
+                <div class="conf-row">
+                    <span>Consultation Mode:</span>
+                    <strong id="confMode">ONLINE</strong>
+                </div>
+                <div class="conf-row">
+                    <span>Consultation Fee:</span>
+                    <strong id="confFee">₹850.00</strong>
+                </div>
+            </div>
+
+            <!-- Dynamic Mode Specific Info Box -->
+            <div id="confModeSpecificBox" class="mode-specific-box">
+                <!-- Injected via JavaScript based on Online vs Offline -->
+            </div>
+
+            <div class="modal-actions center">
+                <button type="button" class="btn btn-primary" id="closeConfirmationBtn">Great, Done!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script File -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: doctor_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: doctor_db
+      MYSQL_ROOT_PASSWORD: Siva143sk
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - doctor_net
+
+  # Spring Boot REST API Backend
+  backend:
+    build:
+      context: ./demo
+      dockerfile: Dockerfile
+    container_name: doctor_backend
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/doctor_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Siva143sk
+      APP_JWT_SECRET: DoctorAppointmentSystemSecretKey2026ExpoSuperSecure256BitKeyMinimumSizeRequiredForHmacSha256!
+    ports:
+      - "8080:8080"
+    networks:
+      - doctor_net
+
+  # React Frontend (Vite build)
+  frontend:
+    image: nginx:alpine
+    container_name: doctor_frontend
+    restart: always
+    volumes:
+      - ./frontend-react/dist:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    networks:
+      - doctor_net
+
+volumes:
+  mysql_data:
+
+networks:
+  doctor_net:
+    driver: bridge
