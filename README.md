@@ -15,7 +15,7 @@ MediConnect is a full-stack healthcare appointment system that enables patients 
 - Daily appointment and revenue summaries
 - REST APIs with Swagger documentation
 - JWT-based authentication and role-based access
-- PostgreSQL database integration
+- mySQL database integration
 - Responsive healthcare-focused interface
 
 ## 🛠️ Technology Stack
@@ -24,7 +24,7 @@ MediConnect is a full-stack healthcare appointment system that enables patients 
 |---|---|
 | Frontend | HTML5, CSS3, JavaScript |
 | Backend | Java, Spring Boot |
-| Database | PostgreSQL |
+| Database | mySQL |
 | ORM | Spring Data JPA / Hibernate |
 | Security | Spring Security, JWT, BCrypt |
 | API Documentation | Swagger / OpenAPI |
