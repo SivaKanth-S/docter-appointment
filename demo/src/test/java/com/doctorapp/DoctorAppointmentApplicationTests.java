@@ -72,6 +72,9 @@ class DoctorAppointmentApplicationTests {
 
         AppointmentRequestDTO request = new AppointmentRequestDTO();
         request.setPatientName("Aravind Swamy");
+        request.setPatientEmail("aravind.swamy@example.com");
+        request.setPatientPhone("+91 98765 43210");
+        request.setPatientGender("Male");
         request.setDoctorId(onlineDoc.getId());
         request.setDoctorName(onlineDoc.getName());
         request.setMode(ConsultationMode.OFFLINE); // CONFLICT: doctor is ONLINE!
@@ -96,6 +99,9 @@ class DoctorAppointmentApplicationTests {
 
         AppointmentRequestDTO req1 = new AppointmentRequestDTO();
         req1.setPatientName("Patient One");
+        req1.setPatientEmail("patient.one@example.com");
+        req1.setPatientPhone("+91 98765 11111");
+        req1.setPatientGender("Female");
         req1.setDoctorId(doc.getId());
         req1.setDoctorName(doc.getName());
         req1.setMode(doc.getMode());
@@ -109,6 +115,9 @@ class DoctorAppointmentApplicationTests {
         // Attempt second booking with same doctor, date, and time
         AppointmentRequestDTO req2 = new AppointmentRequestDTO();
         req2.setPatientName("Patient Two");
+        req2.setPatientEmail("patient.two@example.com");
+        req2.setPatientPhone("+91 98765 22222");
+        req2.setPatientGender("Male");
         req2.setDoctorId(doc.getId());
         req2.setDoctorName(doc.getName());
         req2.setMode(doc.getMode());
@@ -127,6 +136,9 @@ class DoctorAppointmentApplicationTests {
         Doctor doc = doctorService.getAllDoctors().get(0);
         AppointmentRequestDTO req = new AppointmentRequestDTO();
         req.setPatientName("Vijay Kumar");
+        req.setPatientEmail("vijay.kumar@example.com");
+        req.setPatientPhone("+91 98765 33333");
+        req.setPatientGender("Male");
         req.setDoctorId(doc.getId());
         req.setDoctorName(doc.getName());
         req.setMode(doc.getMode());

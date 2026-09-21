@@ -147,6 +147,19 @@ export const FALLBACK_DOCTORS = [
   { id: 9, name: "Dr. Sunita Patel", specialty: "Pediatrics", mode: "OFFLINE", email: "sunita.patel@metrohospital.org", phone: "+91 94445 99001", consultationFee: 600, clinicAddress: "Child Care Center, Rainbow Children's Hospital, Chennai", availability: "Mon-Sat 09:30-16:30" },
 ];
 
+// One login per doctor. Password = <firstname>123. Must match DatabaseInitializer.ensureDoctorLogins()
+export const DOCTOR_CREDENTIALS = [
+  { doctor: "Dr. Sarah Jenkins", username: "drsarah", password: "sarah123", specialty: "Cardiology", mode: "ONLINE" },
+  { doctor: "Dr. Vikram Malhotra", username: "drvikram", password: "vikram123", specialty: "Neurology", mode: "ONLINE" },
+  { doctor: "Dr. Priya Sharma", username: "drpriya", password: "priya123", specialty: "Dermatology", mode: "ONLINE" },
+  { doctor: "Dr. Rajesh Kumar", username: "drrajesh", password: "rajesh123", specialty: "General Medicine", mode: "ONLINE" },
+  { doctor: "Dr. Arun Kumar", username: "drarun", password: "arun123", specialty: "Cardiology", mode: "OFFLINE" },
+  { doctor: "Dr. Meera Nambiar", username: "drmeera", password: "meera123", specialty: "Neurology", mode: "OFFLINE" },
+  { doctor: "Dr. Ananya Roy", username: "drananya", password: "ananya123", specialty: "Dermatology", mode: "OFFLINE" },
+  { doctor: "Dr. David Wilson", username: "drdavid", password: "david123", specialty: "Orthopedics", mode: "OFFLINE" },
+  { doctor: "Dr. Sunita Patel", username: "drsunita", password: "sunita123", specialty: "Pediatrics", mode: "OFFLINE" },
+];
+
 export function findDoctorForUser(doctors, user) {
   if (!doctors || doctors.length === 0) return null;
   if (!user || !user.username) return doctors[0];

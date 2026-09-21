@@ -18,9 +18,15 @@ public class Appointment {
     @Column(nullable = false)
     private String patientName;
 
+    @NotBlank(message = "Patient email is required")
+    @Column(nullable = false)
     private String patientEmail;
 
+    @NotBlank(message = "Patient phone is required")
+    @Column(nullable = false)
     private String patientPhone;
+
+    private String patientGender;
 
     @NotBlank(message = "Doctor name is required")
     @Column(nullable = false)
@@ -96,6 +102,14 @@ public class Appointment {
 
     public void setPatientPhone(String patientPhone) {
         this.patientPhone = patientPhone;
+    }
+
+    public String getPatientGender() {
+        return patientGender;
+    }
+
+    public void setPatientGender(String patientGender) {
+        this.patientGender = patientGender;
     }
 
     public String getDoctorName() {

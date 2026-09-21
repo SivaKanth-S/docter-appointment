@@ -12,7 +12,7 @@ export default function BookAppointment() {
   const [patientName, setPatientName] = useState("");
   const [patientPhone, setPatientPhone] = useState("");
   const [patientEmail, setPatientEmail] = useState("");
-  const [patientGender, setPatientGender] = useState("Male");
+  const [patientGender, setPatientGender] = useState("");
   const [visitReason, setVisitReason] = useState("");
   const [appointmentDate, setAppointmentDate] = useState(new Date().toISOString().split("T")[0]);
   const [showModal, setShowModal] = useState(false);
@@ -57,17 +57,25 @@ export default function BookAppointment() {
     e.preventDefault();
     if (!selectedDoctor) { showToast("Please select a doctor","warning"); return; }
     if (!selectedSlotTime) { showToast("Please pick a time slot","warning"); return; }
+    if (!patientName.trim()) { showToast("Please enter patient full name","warning"); return; }
+    if (!patientPhone.trim()) { showToast("Please enter phone number","warning"); return; }
+    if (!patientEmail.trim()) { showToast("Please enter email address","warning"); return; }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(patientEmail.trim())) { showToast("Please enter a valid email address","warning"); return; }
+    if (!patientGender) { showToast("Please select gender","warning"); return; }
+    if (!visitReason.trim()) { showToast("Please describe reason for consultation / symptoms","warning"); return; }
     const payload = {
       patientName: patientName.trim(),
-      patientPhone,
-      patientEmail,
+      patientPhone: patientPhone.trim(),
+      patientEmail: patientEmail.trim(),
+      patientGender,
       doctorId: selectedDoctor.id,
       doctorName: selectedDoctor.name,
       specialty: selectedDoctor.specialty,
       mode: currentMode,
       appointmentDate,
       appointmentTime: selectedSlotTime,
-      reason: visitReason.trim() || "General Consultation",
+      reason: visitReason.trim(),
     };
     setSubmitting(true);
     try {
@@ -192,10 +200,10 @@ export default function BookAppointment() {
                 <div className="form-group"><label className="form-label">Phone Number <span className="req">*</span></label><input type="tel" className="form-input" placeholder="+91 98765 43210" required value={patientPhone} onChange={e=>setPatientPhone(e.target.value)} /></div>
               </div>
               <div className="grid-2" style={{marginBottom:"1.25rem"}}>
-                <div className="form-group"><label className="form-label">Email Address</label><input type="email" className="form-input" placeholder="patient@example.com" value={patientEmail} onChange={e=>setPatientEmail(e.target.value)} /></div>
-                <div className="form-group"><label className="form-label">Gender</label><select className="form-select" value={patientGender} onChange={e=>setPatientGender(e.target.value)}><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                <div className="form-group"><label className="form-label">Email Address <span className="req">*</span></label><input type="email" className="form-input" placeholder="patient@example.com" required value={patientEmail} onChange={e=>setPatientEmail(e.target.value)} /></div>
+                <div className="form-group"><label className="form-label">Gender <span className="req">*</span></label><select className="form-select" value={patientGender} onChange={e=>setPatientGender(e.target.value)} required><option value="">-- Select Gender --</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
               </div>
-              <div className="form-group" style={{marginBottom:"1.5rem"}}><label className="form-label">Reason for Consultation / Symptoms</label><textarea className="form-textarea" placeholder="Briefly describe symptoms..." value={visitReason} onChange={e=>setVisitReason(e.target.value)}></textarea></div>
+              <div className="form-group" style={{marginBottom:"1.5rem"}}><label className="form-label">Reason for Consultation / Symptoms <span className="req">*</span></label><textarea className="form-textarea" placeholder="Briefly describe symptoms..." required value={visitReason} onChange={e=>setVisitReason(e.target.value)}></textarea></div>
 
               <button type="submit" className="btn btn-primary btn-lg btn-full" disabled={submitting}>{submitting?"Processing Booking...":"Confirm & Book Appointment"}</button>
             </form>

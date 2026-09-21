@@ -117,6 +117,7 @@ public class AppointmentService {
         appointment.setPatientName(dto.getPatientName());
         appointment.setPatientEmail(dto.getPatientEmail());
         appointment.setPatientPhone(dto.getPatientPhone());
+        appointment.setPatientGender(dto.getPatientGender());
         appointment.setDoctorId(doctor.getId());
         appointment.setDoctorName(doctor.getName());
         appointment.setSpecialty(doctor.getSpecialty());

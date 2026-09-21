@@ -56,7 +56,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/", "/index.html", "/style.css", "/script.js", "/favicon.ico").permitAll()
+                        // Real website: React SPA static assets + frontend routes
+                        .requestMatchers("/", "/index.html", "/favicon.svg", "/favicon.ico", "/assets/**", "/*.js", "/*.css", "/*.svg", "/*.png").permitAll()
+                        .requestMatchers("/login", "/signup", "/doctors", "/book", "/appointments", "/dashboard").permitAll()
+                        .requestMatchers("/doctor/**", "/patient/**", "/admin/**").permitAll()
+                        // Legacy vanilla files (kept for reference, harmless)
+                        .requestMatchers("/style.css", "/script.js").permitAll()
                         // Public browsing and demo operations for college expo
                         .requestMatchers(HttpMethod.GET, "/api/doctors/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/specialties/**").permitAll()

@@ -1,6 +1,7 @@
 package com.doctorapp.dto;
 
 import com.doctorapp.entity.ConsultationMode;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -10,9 +11,15 @@ public class AppointmentRequestDTO {
     @NotBlank(message = "Patient name is required")
     private String patientName;
 
+    @NotBlank(message = "Patient email is required")
+    @Email(message = "Patient email must be valid")
     private String patientEmail;
 
+    @NotBlank(message = "Patient phone is required")
     private String patientPhone;
+
+    @NotBlank(message = "Patient gender is required")
+    private String patientGender;
 
     // Doctor can be specified by ID or Name
     private Long doctorId;
@@ -56,6 +63,14 @@ public class AppointmentRequestDTO {
 
     public void setPatientPhone(String patientPhone) {
         this.patientPhone = patientPhone;
+    }
+
+    public String getPatientGender() {
+        return patientGender;
+    }
+
+    public void setPatientGender(String patientGender) {
+        this.patientGender = patientGender;
     }
 
     public Long getDoctorId() {

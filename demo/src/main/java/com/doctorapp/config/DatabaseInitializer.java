@@ -39,6 +39,68 @@ public class DatabaseInitializer implements CommandLineRunner {
             seedDoctorsAndSlots();
             seedAppointments();
         }
+        // Always ensure every doctor in the list has a login (idempotent, works on existing DBs too)
+        ensureDoctorLogins();
+    }
+
+    private void createOrUpdateDoctorUser(String username, String rawPassword, String email) {
+        String encoded = passwordEncoder.encode(rawPassword);
+        userRepository.findByUsername(username).ifPresentOrElse(user -> {
+            // Reset to known password so <doctorname>123 always works, keep ROLE_DOCTOR
+            user.setPassword(encoded);
+            user.setEmail(email);
+            user.setRole("ROLE_DOCTOR");
+            user.setEnabled(true);
+            userRepository.save(user);
+        }, () -> {
+            // Avoid duplicate email clash (e.g. legacy drkumar uses same email as drrajesh)
+            if (email != null && userRepository.existsByEmail(email)) {
+                userRepository.findByEmail(email).ifPresent(existing -> {
+                    existing.setPassword(encoded);
+                    existing.setRole("ROLE_DOCTOR");
+                    existing.setEnabled(true);
+                    userRepository.save(existing);
+                });
+                // Still create the username-based login with a unique email key if needed
+                if (!userRepository.existsByUsername(username)) {
+                    User u = new User(username, encoded, username + "@mediconnect.org", "ROLE_DOCTOR");
+                    userRepository.save(u);
+                }
+            } else {
+                User u = new User(username, encoded, email, "ROLE_DOCTOR");
+                userRepository.save(u);
+            }
+        });
+    }
+
+    private void ensureDoctorLogins() {
+        // One login per doctor in the doctor list. Password = <firstname>123  (e.g. sarah123)
+        // Username = dr<firstname>  (e.g. drsarah)
+        String[][] logins = {
+            {"drsarah", "sarah123", "sarah.jenkins@mediconnect.org"},
+            {"drvikram", "vikram123", "vikram.malhotra@mediconnect.org"},
+            {"drpriya", "priya123", "priya.sharma@mediconnect.org"},
+            {"drrajesh", "rajesh123", "rajesh.kumar@mediconnect.org"},
+            {"drarun", "arun123", "arun.kumar@metrohospital.org"},
+            {"drmeera", "meera123", "meera.nambiar@metrohospital.org"},
+            {"drananya", "ananya123", "ananya.roy@metrohospital.org"},
+            {"drdavid", "david123", "david.wilson@metrohospital.org"},
+            {"drsunita", "sunita123", "sunita.patel@metrohospital.org"},
+        };
+        for (String[] row : logins) {
+            try {
+                createOrUpdateDoctorUser(row[0], row[1], row[2]);
+            } catch (Exception ignored) {
+                // best-effort: never block app startup because of a single login row
+            }
+        }
+        // Keep legacy demo login working: drkumar / doctor123 -> Dr. Rajesh Kumar
+        try {
+            if (!userRepository.existsByUsername("drkumar")) {
+                User legacy = new User("drkumar", passwordEncoder.encode("doctor123"), "drkumar@mediconnect.org", "ROLE_DOCTOR");
+                userRepository.save(legacy);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void seedUsers() {
